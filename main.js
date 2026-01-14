@@ -17,6 +17,15 @@ form.addEventListener('submit', (e) => {
         alert("Registration Successful!");
         form.reset();
         resetStyles(); 
+    } else {
+        // ADD THIS: Shake the card if invalid
+        const card = document.querySelector('.glass-container');
+        card.classList.add('shake');
+        
+        // Remove class after animation ends so it can shake again
+        setTimeout(() => {
+            card.classList.remove('shake');
+        }, 300);
     }
 });
 
@@ -113,24 +122,36 @@ function validateInputs() {
 
 // Helper functions to show success/error
 function setError(input, message) {
-    const inputGroup = input.closest('.input-group'); // Find the parent div
+    const inputGroup = input.closest('.input-group');
     const small = inputGroup.querySelector('small');
     
     // Add error message inside small tag
     small.innerText = message;
     
-    // Add error class
-    inputGroup.className = 'input-group error';
+    // CHANGED: Use classList so we don't delete 'full-width'
+    inputGroup.classList.add('error');     // Add the error class
+    inputGroup.classList.remove('success'); // Remove success class if it was there
 }
 
 function setSuccess(input) {
     const inputGroup = input.closest('.input-group');
-    inputGroup.className = 'input-group success';
+    
+    // CHANGED: Use classList
+    inputGroup.classList.add('success');    // Add success class
+    inputGroup.classList.remove('error');   // Remove error class
 }
 
 function resetStyles() {
     const inputGroups = document.querySelectorAll('.input-group');
-    inputGroups.forEach(group => group.className = 'input-group');
+    
+    inputGroups.forEach(group => {
+        // CHANGED: Only remove the validation classes, keep layout classes
+        group.classList.remove('error', 'success');
+        
+        // Optional: clear error messages text if you want
+        const small = group.querySelector('small');
+        if(small) small.innerText = '';
+    });
 }
 
 // Simple Email Regex
